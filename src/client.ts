@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { AxiosInstance } from 'axios';
-import type { QaseProject, QaseTestCase, QaseTestRun, QaseResponse, QaseError } from './types/api.js';
+import type { QaseProject, QaseTestCase, QaseTestRun, QaseResponse, QaseError, QaseBulkOperation, QaseTestCaseCreate } from './types/api.js';
 
 export class QaseClient {
   private readonly client: AxiosInstance;
@@ -74,6 +74,17 @@ export class QaseClient {
   async createTestRun(projectCode: string, run: { title: string; description?: string; cases?: number[] }): Promise<QaseResponse<{ id: number }>> {
     try {
       const response = await this.client.post(`/run/${projectCode}`, run);
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
+  async createTestCasesInBulk(projectCode: string, cases: QaseTestCaseCreate[]): Promise<QaseResponse<{ ids: number[] }>> {
+    try {
+      const payload: QaseBulkOperation = { cases };
+      const response = await this.client.post(`/case/${projectCode}/bulk`, payload);
       return response.data;
     } catch (error) {
       this.handleError(error);

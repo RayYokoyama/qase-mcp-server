@@ -146,6 +146,42 @@ class QaseMcpServer {
             required: ['project_code', 'title'],
           },
         },
+        {
+          name: 'create_test_cases_in_bulk',
+          description: '複数のテストケースを一括で作成します',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              project_code: {
+                type: 'string',
+                description: 'プロジェクトコード',
+              },
+              cases: {
+                type: 'array',
+                description: '作成するテストケースの配列',
+                items: {
+                  type: 'object',
+                  properties: {
+                    title: {
+                      type: 'string',
+                      description: 'テストケースのタイトル'
+                    },
+                    description: {
+                      type: 'string',
+                      description: 'テストケースの説明'
+                    },
+                    suite_id: {
+                      type: 'number',
+                      description: '所属するスイートのID'
+                    }
+                  },
+                  required: ['title']
+                }
+              }
+            },
+            required: ['project_code', 'cases'],
+          },
+        },
       ],
     }));
 
@@ -266,6 +302,34 @@ class QaseMcpServer {
             const response = await this.qaseClient.createTestRun(
               project_code,
               run as { title: string; description?: string; cases?: number[] }
+            );
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: JSON.stringify(response.result, null, 2),
+                },
+              ],
+            };
+          }
+
+          case 'create_test_cases_in_bulk': {
+            const args = request.params.arguments;
+            if (!args || typeof args.project_code !== 'string') {
+              throw new McpError(
+                ErrorCode.InvalidParams,
+                'project_code must be a string'
+              );
+            }
+            if (!Array.isArray(args.cases)) {
+              throw new McpError(
+                ErrorCode.InvalidParams,
+                'cases must be an array'
+              );
+            }
+            const response = await this.qaseClient.createTestCasesInBulk(
+              args.project_code,
+              args.cases
             );
             return {
               content: [

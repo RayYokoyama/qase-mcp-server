@@ -57,3 +57,28 @@ export interface QaseError {
   status: boolean;
   errorMessage: string;
 }
+
+export interface QaseTestCaseCreate {
+  title: string;
+  description?: string;
+  preconditions?: string;
+  postconditions?: string;
+  priority?: number;
+  severity?: number;
+  behavior?: string;
+  type?: string;
+  layer?: string;
+  status?: string;
+  suite_id?: number;
+  attachments?: string[];
+  steps?: Array<{
+    action: string;
+    expected_result?: string;
+    data?: string;
+    attachments?: string[];
+  }>;
+}
+
+export interface QaseBulkOperation {
+  cases: QaseTestCaseCreate[];
+}
