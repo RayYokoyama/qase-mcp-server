@@ -45,6 +45,14 @@ export interface QaseResponse<T> {
   result: T;
 }
 
+export interface QaseSuite {
+  id: number;
+  title: string;
+  description?: string;
+  preconditions?: string;
+  parent_id?: number;
+}
+
 export interface QaseError {
   status: boolean;
   errorMessage: string;

@@ -1,5 +1,6 @@
-import axios, { AxiosInstance } from 'axios';
-import { QaseProject, QaseTestCase, QaseTestRun, QaseResponse, QaseError } from './types/api.js';
+import axios from 'axios';
+import type { AxiosInstance } from 'axios';
+import type { QaseProject, QaseTestCase, QaseTestRun, QaseResponse, QaseError } from './types/api.js';
 
 export class QaseClient {
   private readonly client: AxiosInstance;
@@ -60,6 +61,16 @@ export class QaseClient {
     }
   }
 
+  async createSuite(projectCode: string, suite: { title: string; description?: string; preconditions?: string; parent_id?: number }): Promise<QaseResponse<{ id: number }>> {
+    try {
+      const response = await this.client.post(`/suite/${projectCode}`, suite);
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
   async createTestRun(projectCode: string, run: { title: string; description?: string; cases?: number[] }): Promise<QaseResponse<{ id: number }>> {
     try {
       const response = await this.client.post(`/run/${projectCode}`, run);
@@ -70,7 +81,7 @@ export class QaseClient {
     }
   }
 
-  private handleError(error: any): never {
+  private handleError(error: unknown): never {
     if (axios.isAxiosError(error)) {
       const errorResponse: QaseError = {
         status: false,

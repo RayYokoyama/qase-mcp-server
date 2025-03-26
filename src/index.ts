@@ -88,6 +88,36 @@ class QaseMcpServer {
           },
         },
         {
+          name: 'create_suite',
+          description: 'テストスイートを作成します',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              project_code: {
+                type: 'string',
+                description: 'プロジェクトコード',
+              },
+              title: {
+                type: 'string',
+                description: 'テストスイートのタイトル',
+              },
+              description: {
+                type: 'string',
+                description: 'テストスイートの説明',
+              },
+              preconditions: {
+                type: 'string',
+                description: 'テストスイートの前提条件',
+              },
+              parent_id: {
+                type: 'number',
+                description: '親スイートのID',
+              },
+            },
+            required: ['project_code', 'title'],
+          },
+        },
+        {
           name: 'create_test_run',
           description: 'テスト実行を作成します',
           inputSchema: {
@@ -178,6 +208,35 @@ class QaseMcpServer {
             const response = await this.qaseClient.createTestCase(
               project_code,
               testCase
+            );
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: JSON.stringify(response.result, null, 2),
+                },
+              ],
+            };
+          }
+
+          case 'create_suite': {
+            const args = request.params.arguments;
+            if (!args || typeof args.project_code !== 'string') {
+              throw new McpError(
+                ErrorCode.InvalidParams,
+                'project_code must be a string'
+              );
+            }
+            if (typeof args.title !== 'string') {
+              throw new McpError(
+                ErrorCode.InvalidParams,
+                'title must be a string'
+              );
+            }
+            const { project_code, ...suite } = args;
+            const response = await this.qaseClient.createSuite(
+              project_code,
+              suite as { title: string; description?: string; preconditions?: string; parent_id?: number }
             );
             return {
               content: [
