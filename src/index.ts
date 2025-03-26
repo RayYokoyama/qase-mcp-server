@@ -57,6 +57,10 @@ class QaseMcpServer {
                 type: 'string',
                 description: 'プロジェクトコード',
               },
+              suite_id: {
+                type: 'number',
+                description: 'スイートID（指定した場合、そのスイートに属するテストケースのみ取得します）',
+              },
             },
             required: ['project_code'],
           },
@@ -138,7 +142,14 @@ class QaseMcpServer {
                 'project_code must be a string'
               );
             }
-            const response = await this.qaseClient.getTestCases(args.project_code);
+            if (args.suite_id !== undefined && typeof args.suite_id !== 'number') {
+              throw new McpError(
+                ErrorCode.InvalidParams,
+                'suite_id must be a number'
+              );
+            }
+            const options = args.suite_id !== undefined ? { suite_id: args.suite_id } : undefined;
+            const response = await this.qaseClient.getTestCases(args.project_code, options);
             return {
               content: [
                 {
