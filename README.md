@@ -9,6 +9,7 @@ Qaseのテスト管理プラットフォームと連携するためのModel Cont
 
 - Node.js (v16以上)
 - Qase APIトークン
+- TypeScript
 
 ### インストール
 
@@ -61,13 +62,15 @@ MCPの設定ファイル（`cline_mcp_settings.json`）に以下の設定を追�
 
 **入力パラメータ**:
 - `project_code`: プロジェクトコード（必須）
+- `suite_id`: スイートID（オプション）- 指定したスイートに属するテストケースのみを取得
 
 **使用例**:
 ```json
 {
   "name": "get_test_cases",
   "arguments": {
-    "project_code": "DEMO"
+    "project_code": "DEMO",
+    "suite_id": 123
   }
 }
 ```
@@ -89,6 +92,30 @@ MCPの設定ファイル（`cline_mcp_settings.json`）に以下の設定を追�
     "project_code": "DEMO",
     "title": "ログイン機能のテスト",
     "description": "ユーザーログイン機能の動作確認"
+  }
+}
+```
+
+### create_suite
+
+テストスイートを作成します。
+
+**入力パラメータ**:
+- `project_code`: プロジェクトコード（必須）
+- `title`: テストスイートのタイトル（必須）
+- `description`: テストスイートの説明（オプション）
+- `preconditions`: テストスイートの前提条件（オプション）
+- `parent_id`: 親スイートのID（オプション）
+
+**使用例**:
+```json
+{
+  "name": "create_suite",
+  "arguments": {
+    "project_code": "DEMO",
+    "title": "認証機能テストスイート",
+    "description": "認証に関連する全てのテストケース",
+    "preconditions": "テスト用のデータベースが初期化されていること"
   }
 }
 ```
@@ -116,6 +143,39 @@ MCPの設定ファイル（`cline_mcp_settings.json`）に以下の設定を追�
 }
 ```
 
+### create_test_cases_in_bulk
+
+複数のテストケースを一括で作成します。
+
+**入力パラメータ**:
+- `project_code`: プロジェクトコード（必須）
+- `cases`: 作成するテストケースの配列（必須）
+  - `title`: テストケースのタイトル（必須）
+  - `description`: テストケースの説明（オプション）
+  - `suite_id`: 所属するスイートのID（オプション）
+
+**使用例**:
+```json
+{
+  "name": "create_test_cases_in_bulk",
+  "arguments": {
+    "project_code": "DEMO",
+    "cases": [
+      {
+        "title": "ログイン成功パターン",
+        "description": "正しい認証情報での確認",
+        "suite_id": 123
+      },
+      {
+        "title": "ログイン失敗パターン",
+        "description": "不正な認証情報での確認",
+        "suite_id": 123
+      }
+    ]
+  }
+}
+```
+
 ## エラーハンドリング
 
 各ツールは以下のようなエラーを返す可能性があります：
@@ -131,6 +191,9 @@ MCPの設定ファイル（`cline_mcp_settings.json`）に以下の設定を追�
 ```bash
 # 開発モードで実行（ファイル変更の監視）
 npm run dev
+
+# テストの実行
+npm test
 ```
 
 ## ライセンス
