@@ -241,9 +241,13 @@ class QaseMcpServer {
               );
             }
             const { project_code, ...testCase } = args;
+            const completeTestCase = {
+              ...testCase,
+              title: typeof testCase.title === 'string' ? testCase.title : 'Default Title', // Ensure title is a string
+            };
             const response = await this.qaseClient.createTestCase(
               project_code,
-              testCase
+              completeTestCase
             );
             return {
               content: [

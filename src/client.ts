@@ -41,7 +41,7 @@ export class QaseClient {
     }
   }
 
-  async createTestCase(projectCode: string, testCase: Partial<QaseTestCase>): Promise<QaseResponse<{ id: number }>> {
+  async createTestCase(projectCode: string, testCase: QaseTestCaseCreate): Promise<QaseResponse<{ id: number }>> {
     try {
       const response = await this.client.post(`/case/${projectCode}`, testCase);
       return response.data;

@@ -71,6 +71,7 @@ export interface QaseTestCaseCreate {
   status?: string;
   suite_id?: number;
   attachments?: string[];
+  steps_type?: 'gherkin';
   steps?: Array<{
     action: string;
     expected_result?: string;
