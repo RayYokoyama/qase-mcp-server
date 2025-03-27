@@ -7,7 +7,7 @@ Qaseのテスト管理プラットフォームと連携するためのModel Cont
 
 ### 前提条件
 
-- Node.js (v16以上)
+- Node.js v23.5.0
 - Qase APIトークン
 - TypeScript
 

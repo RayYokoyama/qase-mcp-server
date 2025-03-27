@@ -28,5 +28,8 @@
     "@types/jest": "^29.5.14",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": "23.5.0"
   }
 }
