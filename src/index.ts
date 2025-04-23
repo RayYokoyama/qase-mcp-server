@@ -170,6 +170,19 @@ class QaseMcpServer {
                       type: 'string',
                       description: 'テストケースの説明'
                     },
+                    steps: {
+                      type: 'array',
+                      description: 'テストケースの手順',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          action: {
+                            type: 'string',
+                            description: '手順のアクション'
+                          },
+                        },
+                      }
+                    },
                     suite_id: {
                       type: 'number',
                       description: '所属するスイートのID'
